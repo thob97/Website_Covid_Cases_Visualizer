@@ -1,9 +1,9 @@
 # Roguelike in Rust
 <p float="left">
-    <img src="./_github_example_pictures/1.png"  width="50%" height="50%">
-    <img src="./_github_example_pictures/4.png"  width="50%" height="50%">
+    <img src="./_github_example_pictures/1.png"  width="45%" height="45%">
+    <img src="./_github_example_pictures/4.png"  width="45%" height="45%">
 </p>
-This repository presents a script to clean a given dataset and visualize it in graphics on a HTML website.
+This repository offers a script for cleaning a provided COVID-19 dataset and visualizing its data through graphics on an HTML website.
 
 ## Table Of Content
 
@@ -13,6 +13,7 @@ This repository presents a script to clean a given dataset and visualize it in g
   - [Dependencies](#dependencies)
   - [Installation](#installation)
   - [Compile and run](#compile-and-run)
+- [ER Model](#er-model)
 - [Example pictures](#example-pictures)
 - [Contribution](#contribution)
 
@@ -32,20 +33,20 @@ The purpose of this project is to further explore and solidify the concepts lear
 ## Getting Started 
 
 ### Dependencies
- * python2
- * java 11
- * javac 11
- * postgresql
- * postgres jdbc driver
+* python 2 (python 2.7.18)
+ * java 11 (openjdk 11.0.19)
+ * javac 11 (openjdk runtime enviroment 11.0.19)
+ * psql 14.8 (postgresql 14.8)
+ * [jdbc postgresql driver 42.6.0 ](https://jdbc.postgresql.org/download/)
  * optional: pgadmin4
  * optional: eclipse
 
 
 ## installation
- 1. Run the dataset cleaner with the dataset beeing in the same directory `python2 convert.py`
- 2. Create the ER-model with postgres. E.g by running the following sql code:
- '''
- CREATE TABLE Land (
+ 1. Execute the dataset cleaner script with the dataset located in the same directory `python2 convert.py`
+ 2. Create the ER model using PostgreSQL. For example, run the following SQL code:
+```
+CREATE TABLE Land (
 	Name varchar(100) PRIMARY KEY,
 	Bevoelkerung int,
 	Kontinent varchar(100)
@@ -64,23 +65,29 @@ CREATE TABLE hat_faelle (
 	foreign key (Datum) references Tag(Datum),
 	foreign key (Name) references Land(Name)
 );
- '''
- 3. Import the three csv files which were created in step 1 to the postgresql database
- 4. Change the username, password and databasename in the 'HttpServer.java' file corresponding to your postgresql setup
-5. add the jdbc driver to your project (e.g. by adding it to the libaries in eclipse)
+```
+ 3. Import the three CSV files generated in step 1 into the PostgreSQL database.
+ 4. Modify the 'HttpServer.java' file to match your PostgreSQL setup by changing the username, password, and database name in that file.
+ 5. Add the JDBC driver to your project, for example, by including it in the project libraries in Eclipse.
 
 ## Compile and run
 
-1. run the javaproject 'http_website'. (eg with eclipse) 
-2. visit the website by  127.0.0.1:8080
+1. Run the Java project 'http_website' (e.g. with Eclipse).
+2. Visit the website by accessing `127.0.0.1:8080`
+
+## ER Model
+<p float="left">
+    <img src="./_github_example_pictures/er-model.png"  width="80%" height="80%">
+</p>
 
 ## TODO Example pictures
 <p float="left">
-    <img src="./_github_example_pictures/1.png"  width="50%" height="50%">
-    <img src="./_github_example_pictures/2.png"  width="50%" height="50%">
-    <img src="./_github_example_pictures/3.png"  width="50%" height="50%">
-    <img src="./_github_example_pictures/4.png"  width="50%" height="50%">
+    <img src="./_github_example_pictures/1.png"  width="80%" height="80%">
+    <img src="./_github_example_pictures/2.png"  width="80%" height="80%">
+    <img src="./_github_example_pictures/3.png"  width="80%" height="80%">
+    <img src="./_github_example_pictures/4.png"  width="80%" height="80%">
 </p>
+
 ## Contribution
 
 * Thore Brehmer - projekt task: dev. website with graphs + connection to sql database to retrieve data
