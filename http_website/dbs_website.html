@@ -1,0 +1,408 @@
+<!doctype html>
+<html>
+
+
+	<head>
+		<meta charset="utf-8"></meta>
+		<title>Ein Besucher Counter</title>
+		<!--package for histogramm--> 
+		<script src='https://cdn.plot.ly/plotly-latest.min.js'></script>
+
+		<style>
+			.header{
+				background-color: black;
+				padding: 1%;
+				padding-bottom: 2.5%;
+			}
+
+			.title{
+				text-align: center;
+				color: white;
+			}
+
+			button {
+				width: 19%;
+				display: inline-block;
+				background-color: transparent;
+				color: white;
+				padding: 16px;
+				font-size: 16px;
+				border: none;
+				display:inline-block;
+				
+				border:0.16em solid #FFFFFF;
+				margin:0 0.725% 0 0;
+				box-sizing: border-box;
+				text-decoration:none;
+				text-transform:uppercase;
+				font-family:'Roboto',sans-serif;
+				font-weight:400;
+				
+				text-align:center;
+				transition: all 1s;
+			}
+
+			.dropdown_content {
+				visibility: hidden;
+				display: block;
+				position: absolute;
+				
+				max-height:0%;
+				min-width: 160px;
+
+				background-color: black;
+				color: white;
+				box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+				
+				z-index: 1;
+				overflow:hidden;
+				transition: all 1s;
+			}
+			
+			.dropdown_content a {
+			  display: block;
+			  padding: 12px 16px;
+			  transition: all 1s;
+			}
+
+
+			textarea {
+				background-color: white;
+				font-family:'Roboto',sans-serif;
+				
+				width: 100%;
+				height: 50px;
+				box-sizing: border-box;
+				border: 2px solid #ccc;
+				border-radius: 4px;
+				font-size: 16px;
+				background-position: 10px 10px; 
+				background-repeat: no-repeat;
+				padding: 12px 20px 12px 40px;
+				transition: height 0.5s ease-in-out;
+				margin-bottom: 2%;
+				resize: none;
+			}
+			
+			/*for centering graphs*/
+			#center_placeholder {
+				text-align: center;
+			}
+			#placeholder_graph {
+				display: inline-block;
+			}		
+						
+			/*table*/
+			table {
+				margin-left: auto;
+  				margin-right: auto;
+				border-collapse: collapse;
+				width: 100%;
+			}
+			th, td {
+				padding: 8px;
+				text-align: left;
+				border-bottom: 1px solid #ddd;
+			}
+			#placeholder_table{
+				margin-top: 1%;
+			}
+
+
+
+			/*hover*/
+			.dropdown_content a:hover {color:black; background-color: white;}
+			.dropdown:hover button {color:black; background-color: white;}
+			.dropdown:hover .dropdown_content {visibility: visible; max-height:100%;}
+			button:hover {color:black; background-color: white;}
+			tr:hover {background-color:#f5f5f5;}
+
+			/*focus*/
+			textarea:focus {height: 200px;}
+			button:focus {color:black; background-color: white;}
+			.dropdown:focus button {color:black; background-color: white;}
+		</style>
+
+
+	</head>
+
+
+
+	<body>
+
+		<div class="header">
+
+			<h1 class="title">Covid-19 Datenbank</h1>
+
+
+			<textarea id="searchbar" spellcheck="false" type="text" value="" placeholder="Search.."></textarea>
+
+			<div id="buttons">
+				<span class="dropdown" tabindex="1" >
+					<button>Dropdown</button>
+					<span class="dropdown_content" >
+						<a id="dropdown_btn_1">Fälle in betracht von Ländern</a>
+						<a id="dropdown_btn_2">Verschwundene in betracht von Ländern</a>
+						<a id="dropdown_btn_3">Alles</a>
+						<a id="dropdown_btn_4">Prozent Zahl der Fälle / Bevölkerung</a>
+						<a id="dropdown_btn_5">Prozent Zahl der Verschwundenen / Bevölkerung</a>
+						<a id="dropdown_btn_6">Fälle pro Tag</a>
+						<a id="dropdown_btn_7">Fälle pro in GER Tag</a>
+						<a id="dropdown_btn_8">Verschwundene pro Tag</a>
+						<a id="dropdown_btn_9">Verschwundene in GER pro Tag</a>
+					</span>
+				</span>
+				<span class="sql_buttons">
+					<button id=button_table >Table</button>
+					<button id=button_graph_1 >Histogram</button>
+					<button id=button_graph_2 >Pie chart</button>
+					<button id=button_graph_3 >Time graph</button>
+				</span>
+			</div>
+
+		</div>
+
+		<div id="center_placeholder">
+			<div id=placeholder_graph></div>
+			<div id=placeholder_table></div>
+		</div>
+		
+
+	</body>
+
+	<script>
+		var placeholder_graph = "placeholder_graph";
+		var placeholder_table = "placeholder_table";
+		document.getElementById("dropdown_btn_1").value = "select sum(faelle) ,name from hat_faelle\n	 where datum = ' 2020-06-14 ' and\n         tode >  30\n         Group by (name)";
+		document.getElementById("dropdown_btn_2").value  = "select sum(tode) ,name from hat_faelle\n	 where datum = ' 2020-06-14 ' and\n         tode >  30\n         Group by (name)";
+		document.getElementById("dropdown_btn_3").value  = "select  tag.datum, faelle, tode, land.name, bevoelkerung, kontinent from hat_faelle,tag,land \n	where hat_faelle.datum = tag.datum and \n	hat_faelle.name = land.name";
+		document.getElementById("dropdown_btn_4").value  = "select sum(faelle)/bevoelkerung, land.name from hat_faelle, land \n	where hat_faelle.name = land.name \n	group by (land.name); ";
+		document.getElementById("dropdown_btn_5").value  = "select sum(tode)/bevoelkerung, land.name from hat_faelle, land \n	where hat_faelle.name = land.name \n	group by (land.name); ";
+		document.getElementById("dropdown_btn_6").value  = "select sum(faelle),datum from hat_faelle \n	group by (datum) \n	ORDER BY (datum) asc; ";
+		document.getElementById("dropdown_btn_7").value  = "select faelle,datum from hat_faelle \n	where name = 'Germany' \n	ORDER BY (datum) asc; ";
+		document.getElementById("dropdown_btn_8").value  = "select sum(tode),datum from hat_faelle \n	group by (datum) \n	ORDER BY (datum) asc; ";
+		document.getElementById("dropdown_btn_9").value  = "select tode,datum from hat_faelle \n	where name = 'Germany' \n	ORDER BY (datum) asc; ";
+
+
+		//get msg from server
+		function getMsgFromServer(type) {
+		  var msg;
+		  var xhttp = new XMLHttpRequest();
+		  xhttp.onreadystatechange = function() {
+			if (this.readyState == 4 && this.status == 200) {
+				msg = this.responseText;
+			}
+		  };
+		  xhttp.open("GET", type, false);
+		  xhttp.send();
+		  return msg;
+		}
+
+
+
+
+		//create table and updates it to html
+		function create_table(id,array,column_num) {
+		  //create new table
+			table = document.createElement("table");
+			row = table.insertRow();
+			var count = 0;
+			//go through the array. copie each array row to the table
+			for (var content of array){
+				var cell = row.insertCell();
+				cell.innerHTML = content;
+				count ++;
+				//create a new row, if the next column starts
+				if (count%column_num==0){ row = table.insertRow();}
+			}
+			//update table to id
+			document.getElementById(id).appendChild(table);
+		}
+
+
+
+
+		function format_sql_result_for_graph(sql_result){
+
+			//sql_result to array and shift number of columns
+			sql_result = sql_result.split(":");
+			var column_num = sql_result.shift();
+
+			//find at which position count row is
+			var operation_pos = 0;	
+			var operation_name;
+			for(var i = 0; i<column_num; i++){
+				if (sql_result[i] == "sum" || sql_result[i] == "count"){
+					operation_pos = i;
+					operation_name = sql_result[i];
+				}
+			}
+
+			//remove column names
+			sql_result = sql_result.slice(column_num, sql_result.length);
+
+			//sort x and y for graph
+			var x = [];
+			var y = [];
+
+			//go through sql_result for each row once
+			//and push to y the operation block and to x everything else
+			for(var i = 0,counter = 0, temp = "";  i < sql_result.length; i++){
+				
+				//add info to temp befor operation_pos
+				counter = 0;
+				while(counter < operation_pos){
+					temp = temp + " " + sql_result[i];
+					counter++;
+					i++;
+				}
+
+				//add info of operation sql to y, like count or sum
+				y.push(sql_result[i]);
+
+				//add info to temp after operation_pos till end of line
+				while (counter < column_num-1){
+					counter++;
+					i++;
+					temp = temp + " " + sql_result[i];
+				}
+
+				//if sql only has one collum... temp will be empty
+				if (temp=="")
+					x.push(operation_name);
+					
+				//push temp info to x
+				else
+					x.push(temp);
+					
+				temp = "";
+
+			}
+
+			return [x,y];
+		}
+
+
+
+
+		function create_graph(sql_formated_result, type, id){
+			
+			var x = sql_formated_result[0];
+			var y = sql_formated_result[1];
+
+			//create histogram graph
+			if (type == "histogram"){
+				var data = [{
+					histfunc: "sum",
+					y: y,
+					x: x,
+					type: 'histogram',
+				}];
+
+				var layout = {
+				height: 650,
+				width: 1800
+				};
+				
+				Plotly.newPlot(id, data,layout);
+			}
+
+			//create pie graph
+			else if (type == "pie"){
+				var data = [{
+					values: y, //count
+					labels: x, //labels
+					type: 'pie'
+				}];
+
+				var layout = {
+				height: 650,
+				width: 650
+				};
+
+				Plotly.newPlot(id, data, layout);
+			}
+
+			//create time graph.. ['2013-10-04 22:23:00',..
+			else if (type == "time"){
+				var data = [{
+					x: x, //time
+					y: y, //count
+					type: 'scatter'
+				}];
+
+				var layout = {
+				height: 650,
+				width: 1800
+				};
+
+				Plotly.newPlot(id, data, layout);
+			}
+
+			
+		}
+
+
+
+		
+
+		//test for buttons click event
+		document.getElementById('buttons').addEventListener('click', function(event) {
+
+			//dropdown menu changes searchbar_content
+			if(event.target.parentNode.className=="dropdown_content")
+				document.getElementById("searchbar").value = event.target.value;
+
+			//sql buttons ask database for data and creates table or graph
+			else if(event.target.parentNode.className=="sql_buttons"){
+				//empty the placeholder div
+				document.getElementById(placeholder_graph).innerHTML="";
+				document.getElementById(placeholder_table).innerHTML="";
+
+				//get text from input box
+				sql_query = document.getElementById("searchbar").value;
+
+				//ask databank for result	
+				sql_result = getMsgFromServer(sql_query);
+
+				//test for syntax error
+				if (sql_result == "error" || sql_query =="")
+					document.getElementById(placeholder_graph).innerHTML="syntax error";
+
+				//else test which button was pressed
+				else{
+					if (event.target.id == "button_table"){
+						//create table with sql_result array and clolumn_num
+						sql_result = sql_result.split(":");
+						var column_num = sql_result.shift();
+						create_table(placeholder_table,sql_result,column_num); 
+					}
+
+					else if (event.target.id == "button_graph_1"){
+						var sql_formated_result = format_sql_result_for_graph(sql_result);
+						create_graph(sql_formated_result, "histogram", placeholder_graph);
+					}
+
+					else if (event.target.id == "button_graph_2"){
+						var sql_formated_result = format_sql_result_for_graph(sql_result);
+						create_graph(sql_formated_result, "pie", placeholder_graph);
+					}
+
+					else if (event.target.id == "button_graph_3"){
+						var sql_formated_result = format_sql_result_for_graph(sql_result);
+						create_graph(sql_formated_result, "time", placeholder_graph);
+					}
+
+				}
+			}
+
+
+		});
+
+
+	</script>
+	
+
+
+
+</html>
