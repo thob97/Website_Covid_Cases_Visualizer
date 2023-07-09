@@ -80,7 +80,7 @@ CREATE TABLE hat_faelle (
     <img src="./_github_example_pictures/er-model.png"  width="80%" height="80%">
 </p>
 
-## TODO Example pictures
+## Example pictures
 <p float="left">
     <img src="./_github_example_pictures/1.png"  width="80%" height="80%">
     <img src="./_github_example_pictures/2.png"  width="80%" height="80%">
