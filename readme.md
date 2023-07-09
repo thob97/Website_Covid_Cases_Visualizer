@@ -1,4 +1,4 @@
-# Roguelike in Rust
+# Website Covid Case Visualizer
 <p float="left">
     <img src="./_github_example_pictures/1.png"  width="45%" height="45%">
     <img src="./_github_example_pictures/4.png"  width="45%" height="45%">
