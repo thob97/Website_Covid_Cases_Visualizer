@@ -48,7 +48,7 @@ The purpose of this project is to further explore and solidify the concepts lear
 ```
 CREATE TABLE Land (
 	Name varchar(100) PRIMARY KEY,
-	Bevoelkerung int,
+	Bevoelkerung DOUBLE PRECISION,
 	Kontinent varchar(100)
 );
 
@@ -58,8 +58,8 @@ CREATE TABLE Tag (
 
 CREATE TABLE hat_faelle (
 	Datum date,
-	Faelle int,
-	Tode int,
+	Faelle DOUBLE PRECISION,
+	Tode DOUBLE PRECISION,
 	Name varchar(100),
 	primary key (Datum, Name),
 	foreign key (Datum) references Tag(Datum),
