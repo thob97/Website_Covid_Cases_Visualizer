@@ -42,7 +42,7 @@ The purpose of this project is to further explore and solidify the concepts lear
  * optional: eclipse
 
 
-## installation
+### installation
  1. Execute the dataset cleaner script with the dataset located in the same directory `python2 convert.py`
  2. Create the ER model using PostgreSQL. For example, run the following SQL code:
 ```
@@ -70,7 +70,7 @@ CREATE TABLE hat_faelle (
  4. Modify the 'HttpServer.java' file to match your PostgreSQL setup by changing the username, password, and database name in that file.
  5. Add the JDBC driver to your project, for example, by including it in the project libraries in Eclipse.
 
-## Compile and run
+### Compile and run
 
 1. Run the Java project 'http_website' (e.g. with Eclipse).
 2. Visit the website by accessing `127.0.0.1:8080`
