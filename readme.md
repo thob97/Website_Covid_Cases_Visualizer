@@ -1,7 +1,7 @@
 # Website Covid Case Visualizer
 <p float="left">
-    <img src="./_github_example_pictures/1.png"  width="45%" height="45%">
-    <img src="./_github_example_pictures/4.png"  width="45%" height="45%">
+    <img src="./_github_example_pictures/preview.gif"  width="45%" height="45%">
+    <img src="./_github_example_pictures/preview_example.png"  width="48.6%" height="48.6%">
 </p>
 This repository offers a script for cleaning a provided COVID-19 dataset and visualizing its data through graphics on an HTML website.
 
