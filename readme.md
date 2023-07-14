@@ -16,6 +16,7 @@ This repository offers a script for cleaning a provided COVID-19 dataset and vis
 - [ER Model](#er-model)
 - [Example pictures](#example-pictures)
 - [Contribution](#contribution)
+- [See also](#see-also)
 
 
 ## Course content
@@ -93,3 +94,7 @@ CREATE TABLE hat_faelle (
 * Thore Brehmer - projekt task: dev. website with graphs + connection to sql database to retrieve data
 * Jonny Lam - projekt task: data cleaning (removing small dataset errors)
 * David Lee - projekt task: import data to sql database
+
+  
+## See also
+* [Uni Overview](https://github.com/thob97/uni_overview.git)
